@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ol layer controller</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.2.0/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.2.0/build/ol.js"></script>
+</head>
+
+<body>
+    <div id="map" class="map"></div>
+    <div id="layersContentDiv" style="visibility: hidden;" >
+			<b>Layers</b>
+			<br>
+	        <input type="checkbox" name="borders" id="checkboxBorders"> Borders<br>
+	        <br>
+	        <b>Background</b>
+	        <br>
+	        <input type="radio" name="backgroundRatio" id="backgroundRatioBing" value="bing" checked> Aerial with labels<br>
+ 			 <input type="radio" name="backgroundRatio" id="backgroundRatioOSM" value="osm"> OSM<br>
+	        <br>
+    </div>
+    <style>
+		.ol-buttonLayers {
+			top: 1px;
+			right: 1px;
+		
+		}
+		.ol-contentsLayers {
+			margin-right:30px;
+		
+		}
+		.ol-layerOn {
+			display: none;
+			position: absolute;
+			opacity:0.97;
+			background-color: white;
+			-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+			-webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+			filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+			padding: 10px;
+			border-radius: 10px;
+			border: 1px solid #cccccc;
+			top: 5px;
+			right: 5px;
+			font-size: small;
+			color: grey;
+		}
+		.ol-layerOff {
+			position: absolute;
+			opacity:0.97;
+			background-color: rgba(1,1,1,0);
+			-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+			-webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+			filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+			padding: 10px;
+			border-radius: 10px;
+			border: 0px solid #cccccc;
+			top: 5px;
+			right: 5px;
+			font-size: small;
+			color: rgba(1,1,1,0);
+		}
+    </style>
+    <script>
+/***************************************************************************
+	This Script is a implementation of layer controller in OpenLayers V3.x and above.
+	For more informations: https://github.com/lcalisto/ol-layer-controller
+****************************************************************************/
+
+    	function showLayersControl() {
+    		var windowcontainer= document.createElement('div');
+    		windowcontainer.setAttribute("id", "windowLeg");
+    		var windowcontent= document.createElement('div');
+    		windowcontent.setAttribute("id", "windowLegcontent");
+    		windowcontent.className = "ol-contentsLayers";
+    		var button = document.createElement('button');
+            button.innerHTML = '<<';
+    		var windowcontent2= document.createElement('div');
+    		windowcontent2.setAttribute("id", "windowLeg-content2");
+    		windowcontent2.appendChild(button);
+    		windowcontent2.className = "ol-buttonLayers ol-unselectable ol-control ol-collapsed";
+    		windowcontainer.appendChild(windowcontent2);
+    		windowcontainer.appendChild(windowcontent);
+    		windowcontainer.className = "ol-layerOn";
+    		windowcontent.innerHTML =document.getElementById('layersContentDiv').innerHTML;
+    		button.onclick = function() {
+    			if(this.innerHTML=='&lt;&lt;'){
+    				this.innerHTML = '>>';
+    				document.getElementById('windowLeg').className = 'ol-layerOff';
+    				document.getElementById('windowLegcontent').innerHTML ='';
+    					
+    			}else{
+    				this.innerHTML = '<<';
+    				document.getElementById('windowLeg').className = 'ol-layerOn';
+    				document.getElementById('windowLegcontent').innerHTML =document.getElementById('layersContentDiv').innerHTML;
+    			}
+    		};
+    		document.getElementById('backgroundRatioBing').addEventListener('click', function(){
+    		});
+    		//global so we can remove it later
+    		legendControl = new ol.control.Control({
+    			element: windowcontainer
+    		});
+    		windowcontainer.style.display = 'block';
+    		map.addControl(legendControl);
+    		//////////////////// Now we can add the listeners in the layer list //////////////////////
+    		var checkFunction=function (event) {
+                var checkbox = event.target;
+                var layerName=this.name
+                if (checkbox.checked) {
+    	           	map.getLayers().forEach(function(l){
+    	           		if(l.get('name')==layerName){
+    	           			l.setVisible(true)
+    	           		}
+    	           	});
+                }
+                else {
+    	           	map.getLayers().forEach(function(l){
+    	           		if(l.get('name')==layerName){
+    	           			l.setVisible(false)
+    	           		}
+    	           	});
+                }
+            }
+    		var ratioFunction=function (event) {
+                var checkbox = event.target;
+                var layerName=this.id;
+                if (checkbox.checked) {
+                	map.getLayers().forEach(function(l){
+    	           		if(l.get('name')==layerName){
+    	           			l.setVisible(true);
+    	           		}else if(l.get('basemap')==true){
+    	           			l.setVisible(false);
+    	           		}
+    	           	});
+                }
+            }
+    		 var checkbox = document.getElementById("checkboxBorders");
+             if (checkbox!=null && checkbox.addEventListener) {
+                 checkbox.addEventListener ("click", checkFunction);
+             }
+    		 var checkbox = document.getElementById("backgroundRatioBing");
+             if (checkbox!=null && checkbox.addEventListener) {
+                 checkbox.addEventListener ("click", ratioFunction);
+             }
+    		 var checkbox = document.getElementById("backgroundRatioOSM");
+             if (checkbox!=null && checkbox.addEventListener) {
+                 checkbox.addEventListener ("click", ratioFunction);
+             }
+             ////////////////////Finish listeners//////////////////////
+    	}
+    	function removeLayersControl() {
+    		if(typeof(legendControl)!='undefined'){
+    			map.removeControl(legendControl);
+    		}
+    		delete legendControl;
+    	}
+
+        var map = new ol.Map({
+            controls: ol.control.defaults({
+                attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+                    collapsible: false
+                })
+            }),
+            layers: [
+                new ol.layer.Tile({
+                	visible: true,
+                	basemap:true,
+                	name:'backgroundRatioBing',
+                    source: new ol.source.BingMaps({
+                        //key: 'Your Bing Maps Key from http://www.bingmapsportal.com/ here',
+                        key: 'AtBPLiCjWdjtGtkHLgJbyMGfXMNtpME9EOtVBiqP7fD8sQUMMDuDfTS1To5TKVJr',
+                        imagerySet: 'AerialWithLabels'
+                      })
+                }),
+                new ol.layer.Tile({
+                	visible: false,
+                	basemap:true,
+                	name:'backgroundRatioOSM',
+                    source: new ol.source.OSM()
+                }),
+                new ol.layer.Tile({
+		        	 visible: false,
+		        	 basemap:false,
+		        	 name:'borders',
+		             source: new ol.source.TileWMS({
+		               url: 'http://irena.masdar.ac.ae/geoserver/irena/wms',
+		               params: {'LAYERS': 'irena:gadm_country_borders', 'TILED': true},
+		               serverType: 'geoserver'
+		             })
+		           }),
+            ],
+            target: 'map',
+            view: new ol.View({
+                center: [0, 0],
+                zoom: 2
+            })
+        });
+        showLayersControl();
+    </script>
+</body>
+
+</html>
