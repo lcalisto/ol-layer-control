@@ -187,10 +187,11 @@
 		        	 basemap:false,
 		        	 name:'borders',
 		             source: new ol.source.TileWMS({
-		               url: 'http://irena.masdar.ac.ae/geoserver/irena/wms',
-		               params: {'LAYERS': 'irena:gadm_country_borders', 'TILED': true},
-		               serverType: 'geoserver'
-		             })
+		                 url: 'https://ahocevar.com/geoserver/wms',
+		                 params: {'LAYERS': 'ne:ne'},
+		                 serverType: 'geoserver',
+		                 crossOrigin: 'anonymous'
+		               })
 		           }),
             ],
             target: 'map',
