@@ -11,21 +11,21 @@ Just check the __index.html__ for details.
 
 A live example in :
 
-[__https://htmlpreview.github.io/?https://github.com/lcalisto/ol_videos/blob/master/index.html__](https://htmlpreview.github.io/?https://github.com/lcalisto/ol_videos/blob/master/index.html)
+[__https://htmlpreview.github.io/?https://github.com/lcalisto/ol-layer-control/blob/master/index.html__](https://htmlpreview.github.io/?https://github.com/lcalisto/ol-layer-control/blob/master/index.html)
 
 ## Notes
 
 In order to make this layer control work, make sure you add __basemap:_boolean___ and __name:_text___ to your layers object.
 
-### To add the layer controller
-The main function to add a video is:
+### To add the layer control
+The main function to add the control is:
 ```
 showLayersControl()
 ```
 
-### To remove the video
+### To remove the control
 
-Function __removeLayersControl()__ removes the layer control video, where __map__ variable is the map where the video is loaded:
+Function __removeLayersControl()__ removes the layer control.
 ```
 removeLayersControl()
 ```
