@@ -1,4 +1,4 @@
-# Layer control in OpenLayers 3.x and above
+# Layer control for OpenLayers 3.x and above
 
 Example on how to create a layer control in OpenLayers 3.x and above. This example uses _OpenLayers 4.2.0_.
 
