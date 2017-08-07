@@ -15,7 +15,7 @@ A live example in :
 
 ## Notes
 
-In order to make this layer control work, make sure you add __basemap:<boolean>__ and __name:<text>__ to your layers object.
+In order to make this layer control work, make sure you add __basemap:_boolean___ and __name:_text___ to your layers object.
 
 ### To add the layer controller
 The main function to add a video is:
